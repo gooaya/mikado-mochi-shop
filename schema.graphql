@@ -1,0 +1,19 @@
+interface Node {
+  id: ID!
+}
+
+type Monster implements Node {
+  id: ID!
+  descId: String
+  attr: Int
+  rarity: Int
+  cost: Int
+  ba: Int
+  ma: Int
+  bhp: Int
+  mhp: Int
+}
+
+type Query {
+  monster(descId: String!): Monster
+}

@@ -1,0 +1,23 @@
+{
+  "name": "mochi-shop",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server-koa": "^2.1.0",
+    "axios": "^0.18.0",
+    "graphql": "^14.0.2",
+    "graphql-relay": "^0.5.5",
+    "koa": "^2.5.3",
+    "stream-buffers": "^3.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.4"
+  }
+}
