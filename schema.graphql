@@ -2,6 +2,23 @@ interface Node {
   id: ID!
 }
 
+enum Localisation {
+  ZH_CN
+  ZH_TW
+  EN_US
+  KO_KR
+  JA_JP
+  ES_ES
+}
+
+type MonsterLocalisation {
+  name: String
+  desc: String
+  awakening: String
+  firstObtain: String
+  skillLine: String
+}
+
 type Monster implements Node {
   id: ID!
   descId: String
@@ -12,8 +29,11 @@ type Monster implements Node {
   ma: Int
   bhp: Int
   mhp: Int
+  loc(loc: Localisation = ZH_CN): MonsterLocalisation
 }
 
 type Query {
-  monster(descId: String!): Monster
+  monster(
+    descId: String!
+  ): Monster
 }

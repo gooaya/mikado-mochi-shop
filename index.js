@@ -4,13 +4,27 @@ const fs = require('fs');
 const { toGlobalId, fromGlobalId }=require('graphql-relay');
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql(fs.readFileSync('./schema.graphql').toString('utf8'));
-const { getConfig } = require('./otogi-client');
+const { getConfig, getLoc } = require('./otogi-client');
 // Provide resolver functions for your schema fields
 const resolvers = {
   Node: {
     __resolveType({ id }) {
       //return fromGlobalId(id).type;
       return 'Monster';
+    }
+  },
+  Monster: {
+    loc: async ({ descId }, { loc }, ctx) => {
+      let l = await getLoc(loc);
+      if (!l) return null;
+      l = l.bundles;
+      return {
+        name: l.MonsterName.strings[descId],
+        desc: l.MonsterDesc.strings[descId],
+        awakening: l.MonsterAwakening.strings[descId],
+        firstObtain: l.MonsterFirstObtain.strings[descId],
+        skillLine: l.MonsterSkillLine.strings[descId],
+      };
     }
   },
   Query: {
