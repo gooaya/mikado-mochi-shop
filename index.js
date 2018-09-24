@@ -13,7 +13,29 @@ const resolvers = {
       return 'Monster';
     }
   },
+  Artist: {
+    id: a => toGlobalId('Artist', a.descId),
+  },
   Monster: {
+    id: m => toGlobalId('Monster', m.descId),
+    artist: async (m, args, { config: { artist } }) => {
+      return artist.find(a=>a.descId==m.art);
+    },
+    baseHp: m=>m.bhp,
+    skill: m=>{
+      //m.sid
+      return null;
+    },
+    profession: m=>m.p,
+    gender: m=>m.gen,
+    maxAtk: m=>m.ma,
+    maxHp: m=>m.mhp,
+    abilities: m=>{
+      // m.aids
+      return null;
+    },
+    maxLevel: m=>m.ml,
+    baseAtk: m=>m.ba,
     loc: async ({ descId }, { loc }, ctx) => {
       let l = await getLoc(loc);
       if (!l) return null;
@@ -28,14 +50,10 @@ const resolvers = {
     }
   },
   Query: {
-    monster: async (root, { descId }, ctx) => {
-      const monster = (await getConfig()).monster;
+    monster: async (root, { descId }, { config: { monster } }) => {
       const m = monster.find(a=>a.descId==descId);
       if (!m) return null;
-      return {
-        id: toGlobalId('Monster', m.descId),
-        ...m,
-      };
+      return m;
     }
   },
 };
@@ -44,9 +62,13 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   introspection: true,
+  context: async (ctx) => ({
+    config: await getConfig()
+  }),
 });
 
 const app = new Koa();
+
 //app.get('/graphiql', graphiqlKoa({ endpointURL: '/graphql' }));
 
 server.applyMiddleware({ app });

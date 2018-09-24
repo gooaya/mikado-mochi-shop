@@ -2,7 +2,7 @@ interface Node {
   id: ID!
 }
 
-enum Localisation {
+enum Language {
   ZH_CN
   ZH_TW
   EN_US
@@ -19,17 +19,62 @@ type MonsterLocalisation {
   skillLine: String
 }
 
+type Artist implements Node {
+  id: ID!
+  nameJP: String
+  nameEn: String
+}
+
+type Skill implements Node {
+  id: ID!
+  name: String
+  desc: String
+}
+
+type MonsterSkill implements Node {
+  id: ID!
+  name: String
+  desc: String
+}
+
+type Ability {
+  id: ID!
+  name: String
+  desc: String
+}
+
 type Monster implements Node {
   id: ID!
-  descId: String
-  attr: Int
-  rarity: Int
+  # 绘师
+  artist: Artist
+  # 灵耗
   cost: Int
-  ba: Int
-  ma: Int
-  bhp: Int
-  mhp: Int
-  loc(loc: Localisation = ZH_CN): MonsterLocalisation
+  # 编号
+  descId: String
+  # 基础生命
+  baseHp: Int
+  # 技能
+  skill: Skill
+  # 职业
+  profession: Int
+  # 性别
+  gender: Int
+  # 最大攻击
+  maxAtk: Int
+  # 最大生命
+  maxHp: Int
+  # 被动技能
+  abilities: [Ability]
+  # 种族
+  attr: Int
+  # 星数
+  rarity: Int
+  # 最大等级
+  maxLevel: Int
+  # 基础攻击
+  baseAtk: Int
+
+  loc(language: Language = ZH_CN): MonsterLocalisation
 }
 
 type Query {
