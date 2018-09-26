@@ -4,7 +4,7 @@ const fs = require('fs');
 const { toGlobalId, fromGlobalId }=require('graphql-relay');
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql(fs.readFileSync('./schema.graphql').toString('utf8'));
-const { getConfig, getLoc } = require('./otogi-client');
+const { getContext, getLoc } = require('./otogi-client');
 // Provide resolver functions for your schema fields
 const resolvers = {
   Node: {
@@ -15,6 +15,15 @@ const resolvers = {
   },
   Artist: {
     id: a => toGlobalId('Artist', a.descId),
+    monsters: ({ descId }, args, { config: { monster } }) =>
+      monster.filter(a=>a.art===descId),
+    total: ({ descId }, args, { config: { monster } }) =>
+      monster.reduce((s,a)=>s+(a.art===descId), 0),
+  },
+  Bonds: {
+    id: a => toGlobalId('Bonds', a.descId),
+    monster: (a, args, { monsters }) => monsters[a.mid],
+    target: (a, args, { monsters }) => monsters[a.ts],
   },
   Monster: {
     id: m => toGlobalId('Monster', m.descId),
@@ -36,8 +45,8 @@ const resolvers = {
     },
     maxLevel: m=>m.ml,
     baseAtk: m=>m.ba,
-    loc: async ({ descId }, { loc }, ctx) => {
-      let l = await getLoc(loc);
+    loc: async ({ descId }, { language }, ctx) => {
+      let l = await getLoc(language);
       if (!l) return null;
       l = l.bundles;
       return {
@@ -47,13 +56,27 @@ const resolvers = {
         firstObtain: l.MonsterFirstObtain.strings[descId],
         skillLine: l.MonsterSkillLine.strings[descId],
       };
+    },
+    bonds: (m, args, { config: { monsterEntanglement } }) => {
+      const mid = m.descId;
+      return monsterEntanglement.filter(
+        a=>a.ts===mid || a.ts && a.mid===mid
+      );
     }
+
   },
   Query: {
-    monster: async (root, { descId }, { config: { monster } }) => {
-      const m = monster.find(a=>a.descId==descId);
-      if (!m) return null;
-      return m;
+    monster(root, { descId }, { monsters }) {
+      return monsters[descId] || null;
+    },
+    monsters(root, args, { config: { monster } }) {
+      return monster;
+    },
+    artist(root, { descId }, { config: { artist } }) {
+      return  artist.find(a=>a.descId===descId) || null;
+    },
+    artists(root, args, { artists }) {
+      return artists;
     }
   },
 };
@@ -62,9 +85,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   introspection: true,
-  context: async (ctx) => ({
-    config: await getConfig()
-  }),
+  context: getContext,
 });
 
 const app = new Koa();

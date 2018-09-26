@@ -28,7 +28,7 @@ function cacheJsonWrapper(fun) {
     try {
       if (await existsAsync(fullpath)) {
         result[key] = readFileAsync(fullpath);
-        result[key] = await result[key];
+        result[key] = JSON.parse(await result[key]);
         return result[key];
       }
     } catch (e) {

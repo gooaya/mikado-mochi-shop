@@ -21,8 +21,11 @@ type MonsterLocalisation {
 
 type Artist implements Node {
   id: ID!
+  descId: String
   nameJP: String
   nameEn: String
+  monsters: [Monster]
+  total: Int
 }
 
 type Skill implements Node {
@@ -75,10 +78,22 @@ type Monster implements Node {
   baseAtk: Int
 
   loc(language: Language = ZH_CN): MonsterLocalisation
+  bonds: [Bonds]
+}
+
+type Bonds implements Node {
+  id: ID!
+  monster: Monster
+  target: Monster
 }
 
 type Query {
   monster(
     descId: String!
   ): Monster
+  monsters: [Monster]
+  artist(
+    descId: String!
+  ): Artist
+  artists: [Artist]
 }
