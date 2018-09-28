@@ -7,18 +7,28 @@
     "node": "10.x"
   },
   "scripts": {
-    "dev": "nodemon --ignore 'cache/' index.js",
-    "start": "node index.js",
+    "dev": "nodemon --ignore 'cache/' server.js",
+    "build": "next build",
+    "heroku-postbuild": "npm run build",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apollo-boost": "^0.1.16",
     "apollo-server-koa": "^2.1.0",
     "axios": "^0.18.0",
     "graphql": "^14.0.2",
     "graphql-relay": "^0.5.5",
     "koa": "^2.5.3",
+    "koa-router": "^7.4.0",
+    "material-ui": "^0.20.2",
+    "next": "^7.0.0",
+    "node-fetch": "^2.2.0",
+    "react": "^16.5.2",
+    "react-apollo": "^2.2.1",
+    "react-dom": "^16.5.2",
     "stream-buffers": "^3.0.2"
   },
   "devDependencies": {

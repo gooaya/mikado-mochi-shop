@@ -1,4 +1,7 @@
 const Koa = require('koa');
+const next = require('next');
+const Router = require('koa-router');
+
 const { ApolloServer, gql } = require('apollo-server-koa');
 const fs = require('fs');
 const { toGlobalId, fromGlobalId }=require('graphql-relay');
@@ -6,6 +9,8 @@ const { toGlobalId, fromGlobalId }=require('graphql-relay');
 const typeDefs = gql(fs.readFileSync('./schema.graphql').toString('utf8'));
 const { getContext, getLoc } = require('./otogi-client');
 // Provide resolver functions for your schema fields
+
+
 const resolvers = {
   Node: {
     __resolveType({ id }) {
@@ -81,24 +86,45 @@ const resolvers = {
   },
 };
 
-const server = new ApolloServer({
+const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
   introspection: true,
   context: getContext,
 });
 
-const app = new Koa();
+const app = next({
+  dev:process.env.NODE_ENV !== 'production'
+});
+
+const handle = app.getRequestHandler();
 
 //app.get('/graphiql', graphiqlKoa({ endpointURL: '/graphql' }));
 
-server.applyMiddleware({ app });
 
+app.prepare().then(()=>{
+  const server = new Koa();
+  const router = new Router();
+
+  apolloServer.applyMiddleware({ app: server });
+
+  router.get('*', async ctx => {
+    await handle(ctx.req, ctx.res);
+    ctx.response = false;
+  });
+
+  server.use(router.routes());
+  server.listen(
+    { port: process.env.PORT || 3000 },
+    () =>
+      console.log(`🚀 Server ready at http://localhost:3000${apolloServer.graphqlPath}`),
+  );
+
+});
+
+/*
 app.use((ctx, next)=>{
   ctx.redirect('/graphql');
   next();
 });
-
-app.listen({ port: process.env.PORT || 3000 }, () =>
-  console.log(`🚀 Server ready at http://localhost:3000${server.graphqlPath}`),
-);
+*/
