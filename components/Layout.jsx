@@ -53,50 +53,13 @@ function Layout(props) {
       <AppBar position="static" className={classes.appBar}>
         <Toolbar>
           <Typography variant="title" color="inherit" noWrap>
-            Album layout
+            Mikado Mochi Shop
           </Typography>
         </Toolbar>
       </AppBar>
       <main>
-        {/* Hero unit */}
-        <div className={classes.heroUnit}>
-          <div className={classes.heroContent}>
-            <Typography variant="display3" align="center" color="textPrimary" gutterBottom>
-              Album layout
-            </Typography>
-            <Typography variant="title" align="center" color="textSecondary" paragraph>
-              Something short and leading about the collection below—its contents, the creator, etc.
-              Make it short and sweet, but not too short so folks don&apos;t simply skip over it
-              entirely.
-            </Typography>
-            <div className={classes.heroButtons}>
-              <Grid container spacing={16} justify="center">
-                <Grid item>
-                  <Button variant="contained" color="primary">
-                    Main call to action
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button variant="outlined" color="primary">
-                    Secondary action
-                  </Button>
-                </Grid>
-              </Grid>
-            </div>
-          </div>
-        </div>
         {children}
       </main>
-      {/* Footer */}
-      <footer className={classes.footer}>
-        <Typography variant="title" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography variant="subheading" align="center" color="textSecondary" component="p">
-          Something here to give the footer a purpose!
-        </Typography>
-      </footer>
-      {/* End footer */}
     </React.Fragment>
   );
 }
@@ -106,3 +69,18 @@ Layout.propTypes = {
 };
 
 export default withStyles(styles)(Layout);
+
+function footer(arg) {
+  return <div>
+    {/* Footer */}
+    <footer className={classes.footer}>
+      <Typography variant="title" align="center" gutterBottom>
+        Footer
+      </Typography>
+      <Typography variant="subheading" align="center" color="textSecondary" component="p">
+        Something here to give the footer a purpose!
+      </Typography>
+    </footer>
+    {/* End footer */}
+  </div>
+}

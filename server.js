@@ -75,7 +75,7 @@ const resolvers = {
       return monsters[descId] || null;
     },
     monsters(root, args, { config: { monster } }) {
-      return monster;
+      return monster.filter(a=>a.album);
     },
     artist(root, { descId }, { config: { artist } }) {
       return  artist.find(a=>a.descId===descId) || null;

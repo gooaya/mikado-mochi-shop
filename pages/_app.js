@@ -9,6 +9,15 @@ import { ApolloProvider } from 'react-apollo';
 import withApolloClient from '../lib/with-apollo-client';
 
 class MyApp extends App {
+  static async getInitialProps (ctx) {
+    const { Component } = ctx;
+    if (Component.getInitialProps) {
+      return await Component.getInitialProps(ctx);
+    } else {
+      return {};
+    }
+  }
+
   constructor(props) {
     super(props);
     this.pageContext = getPageContext();
