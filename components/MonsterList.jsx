@@ -93,14 +93,18 @@ function MonsterList (props) {
     {/* End hero unit */}
     <Grid container spacing={8}>
       <Query query={allMonstersQuery}>
-        {({ loading, error, data: { monsters } }) =>
-          monsters.map(monster => (
+    {({ loading, error, data: { monsters } }) => {
+      if(loading) {
+        return 'loading...';
+      }
+          return monsters.map(monster => (
             <Grid item key={monster.id}>
               <Link href={{ pathname: '/monster', query: { descId: monster.descId } }}>
                 <Chip label={monster.loc.name} />
               </Link>
             </Grid>
           ))}
+        }
       </Query>
     </Grid>
   </div>

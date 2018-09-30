@@ -19,6 +19,7 @@ export const monsterQuery = gql`
   query monster($descId: String!) {
     monster(descId: $descId){
       id
+      descId
       rarity
       profession
       baseAtk
@@ -29,12 +30,12 @@ export const monsterQuery = gql`
         nameJP
         nameEn
       }
-      descId
       loc{
         name
         desc
       }
       bonds {
+        id
         target{
           descId
           loc{
@@ -86,9 +87,9 @@ function Monster({classes, descId}) {
          </Typography>
          {
            monster.bonds.map(a=>{
-             const m = a.target.descId===monster.descId?a.monster:a.target;
+             const m = a.monster.descId===monster.descId?a.target:a.monster;
              return (
-               <Link key={m.id} href={{ pathname: '/monster', query: { descId: m.descId } }}>
+               <Link key={a.id} href={{ pathname: '/monster', query: { descId: m.descId } }}>
                  <Chip label={m.loc.name} />
                </Link>
              );
