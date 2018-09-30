@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Link from 'next/link';
 import classNames from 'classnames';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
@@ -52,9 +53,11 @@ function Layout(props) {
       <CssBaseline />
       <AppBar position="static" className={classes.appBar}>
         <Toolbar>
-          <Typography variant="title" color="inherit" noWrap>
-            Mikado Mochi Shop
-          </Typography>
+          <Link href={{ pathname: '/'}}>
+            <Typography variant="title" color="inherit" noWrap>
+              Mikado Mochi Shop
+            </Typography>
+          </Link>
         </Toolbar>
       </AppBar>
       <main>
