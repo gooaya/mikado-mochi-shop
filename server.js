@@ -1,7 +1,6 @@
 const Koa = require('koa');
 const next = require('next');
 const Router = require('koa-router');
-const apolloServer = require('./apollo-server');
 
 const app = next({
   dev:process.env.NODE_ENV !== 'production'
@@ -12,8 +11,6 @@ const handle = app.getRequestHandler();
 app.prepare().then(()=>{
   const server = new Koa();
   const router = new Router();
-
-  apolloServer.applyMiddleware({ app: server });
 
   router.get('*', async ctx => {
     await handle(ctx.req, ctx.res);
