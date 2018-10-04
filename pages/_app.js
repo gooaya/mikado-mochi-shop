@@ -7,6 +7,10 @@ import getPageContext from '../lib/getPageContext';
 
 import { ApolloProvider } from 'react-apollo';
 import withApolloClient from '../lib/with-apollo-client';
+import { addLocaleData, IntlProvider } from 'react-intl';
+import appLocale from '../locales/en';
+
+addLocaleData(appLocale.data);
 
 class MyApp extends App {
   static async getInitialProps (ctx) {
@@ -51,7 +55,10 @@ class MyApp extends App {
             {/* Pass pageContext to the _document though the renderPage enhancer
                 to render collected styles on server side. */}
             <ApolloProvider client={apolloClient}>
-              <Component pageContext={this.pageContext} {...pageProps} />
+              <IntlProvider locale={appLocale.locale} messages={appLocale.messages}>
+
+                <Component pageContext={this.pageContext} {...pageProps} />
+              </IntlProvider>
             </ApolloProvider>
           </MuiThemeProvider>
         </JssProvider>
