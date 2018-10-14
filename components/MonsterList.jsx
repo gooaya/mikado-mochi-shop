@@ -9,8 +9,9 @@ import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
-import Link from 'next/link';
+import Link from './Link';
 import Chip from '@material-ui/core/Chip';
+import LocContext from './LocContext';
 
 const styles = theme => ({
   cardGrid: {
@@ -40,11 +41,11 @@ const styles = theme => ({
 });
 
 export const allMonstersQuery = gql`
-  query allMonsters {
+  query allMonsters($language: Language) {
     monsters {
       id
       descId
-      loc{
+      loc(language: $language){
         name
       }
     }
@@ -92,20 +93,22 @@ function MonsterList (props) {
   return (<div className={classNames(classes.layout, classes.cardGrid)}>
     {/* End hero unit */}
     <Grid container spacing={8}>
-      <Query query={allMonstersQuery}>
-        {({ loading, error, data: { monsters } }) => {
-          if (loading) {
-            return 'loading...';
+      <LocContext.Consumer>{
+        language=><Query query={allMonstersQuery} variables={{ language: (language||'zh_CN') }}>
+          {({ loading, error, data: { monsters } }) => {
+             if (loading) {
+               return 'loading...';
+             }
+             return monsters.map(monster => (
+               <Grid item key={monster.id}>
+                 <Link href={{ pathname: '/monster', query: { descId: monster.descId } }}>
+                   <Chip label={monster.loc.name} />
+                 </Link>
+               </Grid>
+             ));}
           }
-          return monsters.map(monster => (
-            <Grid item key={monster.id}>
-              <Link href={{ pathname: '/monster', query: { descId: monster.descId } }}>
-                <Chip label={monster.loc.name} />
-              </Link>
-            </Grid>
-          ));}
-        }
-      </Query>
+        </Query>
+      }</LocContext.Consumer>
     </Grid>
   </div>
   );

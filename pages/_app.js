@@ -8,23 +8,45 @@ import getPageContext from '../lib/getPageContext';
 import { ApolloProvider } from 'react-apollo';
 import withApolloClient from '../lib/with-apollo-client';
 import { addLocaleData, IntlProvider } from 'react-intl';
-import appLocale from '../locales/en';
+import LocContext from '../components/LocContext';
 
-addLocaleData(appLocale.data);
+const lans=[
+  'zh_TW',
+  'en_US',
+  'ko_KR',
+  'ja_JP',
+  'es_ES',
+];
+
+function getLocale(path) {
+  const lan = lans.find(a=>path.startsWith('/'+a));
+  return lan || null;
+}
 
 class MyApp extends App {
   static async getInitialProps (ctx) {
     const { Component } = ctx;
+    const props = {
+      appLocaleName: getLocale(ctx.ctx.asPath),
+    };
     if (Component.getInitialProps) {
-      return await Component.getInitialProps(ctx);
+      return {
+        ...(await Component.getInitialProps(ctx)),
+        ...props,
+      };
     } else {
-      return {};
+      return props;
     }
   }
 
   constructor(props) {
     super(props);
     this.pageContext = getPageContext();
+    this.appLocale = {};
+    if (props.appLocaleName === 'en_US') {
+      this.appLocale = require('../locales/en');
+      addLocaleData(this.appLocale.data);
+    }
   }
 
   componentDidMount() {
@@ -36,7 +58,7 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps, apolloClient } = this.props;
+    const { Component, pageProps, apolloClient, appLocaleName } = this.props;
     return (
       <Container>
         {/* Wrap every page in Jss and Theme providers */}
@@ -55,9 +77,10 @@ class MyApp extends App {
             {/* Pass pageContext to the _document though the renderPage enhancer
                 to render collected styles on server side. */}
             <ApolloProvider client={apolloClient}>
-              <IntlProvider locale={appLocale.locale} messages={appLocale.messages}>
-
-                <Component pageContext={this.pageContext} {...pageProps} />
+              <IntlProvider locale={this.appLocale.locale} messages={this.appLocale.messages}>
+                <LocContext.Provider value={appLocaleName}>
+                  <Component pageContext={this.pageContext} {...pageProps} />
+                </LocContext.Provider>
               </IntlProvider>
             </ApolloProvider>
           </MuiThemeProvider>
