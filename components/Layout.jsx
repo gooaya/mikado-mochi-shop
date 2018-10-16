@@ -114,6 +114,11 @@ const SelectLanguage = () => (
             한국어
           </Link>
         </MenuItem>
+        <MenuItem value="es_ES">
+          <Link href={{ pathname: '/es_ES'}}>
+            Español
+          </Link>
+        </MenuItem>
       </Select>
     )
   }</LocContext.Consumer>
