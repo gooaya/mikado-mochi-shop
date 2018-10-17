@@ -37,6 +37,7 @@ export const monsterQuery = gql`
       }
       bonds {
         id
+        desc(language: $language)
         target{
           descId
           loc{
@@ -93,7 +94,7 @@ function Monster({classes, descId}) {
                const m = a.monster.descId===monster.descId?a.target:a.monster;
                return (
                  <Link key={a.id} href={{ pathname: '/monster', query: { descId: m.descId } }}>
-                   <Chip label={m.loc.name} />
+                   <Chip label={`${m.loc.name}: ${a.desc}`} />
                  </Link>
                );
              })
