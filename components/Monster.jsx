@@ -27,6 +27,10 @@ export const monsterQuery = gql`
       maxAtk
       baseHp
       maxHp
+      skill {
+        name(language: $language)
+        desc(language: $language)
+      }
       artist {
         nameJP
         nameEn
@@ -60,47 +64,50 @@ function Monster({classes, descId}) {
   return (
     <LocContext.Consumer>{
       language=><Query query={monsterQuery} variables={{ descId, language }}>
-      {({ loading, error, data:{monster} }) => {
-         if(loading) {
-           return 'loading';
-         }
-         if(error){
-           return error.message;
-         }
-         return (<Paper className={classes.root} elevation={1}>
-           <Typography variant="headline" component="h3">
-             {monster.loc.name}
-           </Typography>
-           <Typography component="p">
-             <span>Rarity:</span> <span>{monster.rarity}</span>
-           </Typography>
-           <Typography component="p">
-             <span>Profession:</span> <span>{monster.profession}</span>
-           </Typography>
-           <Typography component="p">
-             <span>Atk:</span> <span>{`${monster.baseAtk}/${monster.maxAtk}`}</span>
-           </Typography>
-           <Typography component="p">
-             <span>Hp:</span> <span>{`${monster.baseHp}/${monster.maxHp}`}</span>
-           </Typography>
-           <Typography component="p">
-             <span>Artist:</span> <span>{`${monster.artist.nameJP} (${monster.artist.nameEn})`}</span>
-           </Typography>
-           <Typography component="p">
-             羁绊:
-           </Typography>
-           {
-             monster.bonds.map(a=>{
-               const m = a.monster.descId===monster.descId?a.target:a.monster;
-               return (
-                 <Link key={a.id} href={{ pathname: '/monster', query: { descId: m.descId } }}>
-                   <Chip label={`${m.loc.name}: ${a.desc}`} />
-                 </Link>
-               );
-             })
+        {({ loading, error, data:{monster} }) => {
+           if(loading) {
+             return 'loading';
            }
-         </Paper>);
-      }}
+           if(error){
+             return error.message;
+           }
+           return (<Paper className={classes.root} elevation={1}>
+             <Typography variant="headline" component="h3">
+               {monster.loc.name}
+             </Typography>
+             <Typography component="p">
+               <span>Rarity:</span> <span>{monster.rarity}</span>
+             </Typography>
+             <Typography component="p">
+               <span>Profession:</span> <span>{monster.profession}</span>
+             </Typography>
+             <Typography component="p">
+               <span>Atk:</span> <span>{`${monster.baseAtk}/${monster.maxAtk}`}</span>
+             </Typography>
+             <Typography component="p">
+               <span>Hp:</span> <span>{`${monster.baseHp}/${monster.maxHp}`}</span>
+             </Typography>
+             <Typography component="p">
+               <span>Artist:</span> <span>{`${monster.artist.nameJP} (${monster.artist.nameEn})`}</span>
+             </Typography>
+             <Typography component="p">
+               <span>Skill:</span> <span>{`${monster.skill.name}: ${monster.skill.desc}`}</span>
+             </Typography>
+             <Typography component="p">
+               羁绊:
+             </Typography>
+             {
+               monster.bonds.map(a=>{
+                 const m = a.monster.descId===monster.descId?a.target:a.monster;
+                 return (
+                   <Link key={a.id} href={{ pathname: '/monster', query: { descId: m.descId } }}>
+                     <Chip label={`${m.loc.name}: ${a.desc}`} />
+                   </Link>
+                 );
+               })
+             }
+           </Paper>);
+        }}
       </Query>
     }</LocContext.Consumer>
   )

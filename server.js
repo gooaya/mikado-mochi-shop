@@ -1,6 +1,7 @@
 const Koa = require('koa');
 const next = require('next');
 const Router = require('koa-router');
+const compress = require('koa-compress');
 
 const app = next({
   dev:process.env.NODE_ENV !== 'production'
@@ -18,10 +19,12 @@ app.prepare().then(()=>{
   });
 
   server.use(router.routes());
+  server.use(compress());
   server.listen(
     { port: process.env.PORT || 3000 },
-    () =>
-      console.log(`🚀 Server ready at http://localhost:3000`),
+    () => console.log(
+      `🚀 Server ready at http://localhost:3000`
+    ),
   );
 });
 

@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "node server.js",
-    "dev2": "nodemon --ignore 'cache/' server.js",
+    "dev2": "nodemon --ignore 'cache/' ./apollo-server/dev-server.js",
     "build": "next build",
     "heroku-postbuild": "npm run build",
     "start": "node server.js",
@@ -25,6 +25,7 @@
     "graphql-relay": "^0.5.5",
     "jss": "^9.8.7",
     "koa": "^2.5.3",
+    "koa-compress": "^3.0.0",
     "koa-router": "^7.4.0",
     "next": "^7.0.0",
     "node-fetch": "^2.2.0",
