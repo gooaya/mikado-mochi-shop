@@ -1,6 +1,6 @@
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import Link from 'next/link';
+import Link from './Link';
 import PropTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
@@ -31,6 +31,11 @@ export const monsterQuery = gql`
         name(language: $language)
         desc(language: $language)
       }
+      abilities {
+        name(language: $language)
+        desc(language: $language)
+        unlockLevel
+      }
       artist {
         nameJP
         nameEn
@@ -44,13 +49,13 @@ export const monsterQuery = gql`
         desc(language: $language)
         target{
           descId
-          loc{
+          loc(language: $language){
             name
           }
         }
         monster{
           descId
-          loc{
+          loc(language: $language){
             name
           }
         }
@@ -94,7 +99,18 @@ function Monster({classes, descId}) {
                <span>Skill:</span> <span>{`${monster.skill.name}: ${monster.skill.desc}`}</span>
              </Typography>
              <Typography component="p">
-               羁绊:
+               <span>Abilities:</span>
+               <div>
+                 {monster.abilities.map(a=>(
+                   <div key={a.name}>
+                     {`${a.name}[lv${a.unlockLevel}]: ${a.desc}`}
+                   </div>
+                 ))}
+               </div>
+             </Typography>
+
+             <Typography component="p">
+               Bonds:
              </Typography>
              {
                monster.bonds.map(a=>{
@@ -110,7 +126,7 @@ function Monster({classes, descId}) {
         }}
       </Query>
     }</LocContext.Consumer>
-  )
+           )
 }
 
 Monster.propTypes = {
