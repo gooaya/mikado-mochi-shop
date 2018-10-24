@@ -40,11 +40,20 @@ const styles = theme => ({
   },
 });
 
+const colorMap = [
+  null,
+  [null,null,null,'#E1F5FE','#B3E5FC','#81D4FA','#4FC3F7','#29B6F6'],
+  [null,null,null,'#FBE9E7','#FFCCBC','#FFAB91','#FF8A65','#FF7043'],
+  [null,null,null,'#E8F5E9','#C8E6C9','#A5D6A7','#81C784','#66BB6A'],
+];
+
 export const allMonstersQuery = gql`
   query allMonsters($language: Language) {
     monsters {
       id
       descId
+      rarity
+      attr
       loc(language: $language){
         name
       }
@@ -102,7 +111,7 @@ function MonsterList (props) {
              return monsters.map(monster => (
                <Grid item key={monster.id}>
                  <Link href={{ pathname: '/monster', query: { descId: monster.descId } }}>
-                   <Chip label={monster.loc.name} />
+                   <Chip label={monster.loc.name} style={{backgroundColor:colorMap[monster.attr][monster.rarity]}} />
                  </Link>
                </Grid>
              ));}
