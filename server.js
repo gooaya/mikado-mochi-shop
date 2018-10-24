@@ -12,6 +12,7 @@ const handle = app.getRequestHandler();
 app.prepare().then(()=>{
   const server = new Koa();
   const router = new Router();
+  server.use(compress());
 
   router.get('*', async ctx => {
     await handle(ctx.req, ctx.res);
@@ -19,7 +20,6 @@ app.prepare().then(()=>{
   });
 
   server.use(router.routes());
-  server.use(compress());
   server.listen(
     { port: process.env.PORT || 3000 },
     () => console.log(
