@@ -13,6 +13,7 @@ app.prepare().then(()=>{
   const server = new Koa();
   const router = new Router();
   server.use(compress());
+  server.use(require('koa-static')('./public'));
 
   router.get('*', async ctx => {
     await handle(ctx.req, ctx.res);
